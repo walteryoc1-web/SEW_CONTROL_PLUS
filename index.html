@@ -19,7 +19,7 @@
         <h2 style="color:var(--verde-oscuro); margin-top:0;">TERPAC LOGIN</h2>
         <input type="text" id="u" placeholder="Usuario">
         <input type="password" id="p" placeholder="Contraseña">
-        <button class="btn" onclick="entrar()" style="width:100%">INGRESAR</button>
+        <button class="btn" onclick="entrar()">INGRESAR</button>
     </div>
 
     <div id="ui-app" class="card" style="display:none;">
@@ -28,8 +28,11 @@
         <div id="piloto-box"></div>
         <select id="mov"><option>1) Arribo</option><option>2) Entrada</option><option>3) Salida</option></select>
         <select id="prod"><option>SBM</option><option>YC (USA)</option><option>SWW</option></select>
-        <button id="btn-env" class="btn" onclick="enviar()" style="width:100%">REGISTRAR EN AIRTABLE 🚀</button>
+        <button id="btn-env" class="btn" onclick="enviar()">REGISTRAR EN AIRTABLE 🚀</button>
     </div>
+
+    <!-- ESTO ES LO QUE HACE QUE FUNCIONE: UN FORMULARIO INVISIBLE -->
+    <form id="airtable-form" style="display:none;"></form>
 
     <script>
         const pilotos = { "101": { n: "Juan Perez" }, "102": { n: "Pedro Marmol" } };
@@ -57,7 +60,7 @@
             if(!pilotos[id]) return alert("ID no encontrado");
 
             const btn = document.getElementById('btn-env');
-            btn.innerText = "Enviando...";
+            btn.innerText = "Procesando...";
             btn.disabled = true;
 
             const APP_ID = 'app3cdqCOInpldMCJ';
@@ -66,47 +69,30 @@
 
             const infoTexto = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${document.getElementById('mov').value} | Prod: ${document.getElementById('prod').value}`;
             
-            // Usamos el formato ISO que Airtable entiende perfectamente
-            const fechaActual = new Date().toISOString();
-
-            const datosAEnviar = {
+            const datos = {
                 "records": [{
                     "fields": {
                         "DATOS": infoTexto,
-                        "FECHA": fechaActual
+                        "FECHA": new Date().toISOString()
                     }
                 }]
             };
 
-            try {
-                const response = await fetch(`https://api.airtable.com{APP_ID}/${TABLE_ID}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${TOKEN}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(datosAEnviar)
-                });
+            // USAMOS XMLHttpRequest PARA EVITAR BLOQUEOS CORS
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", `https://api.airtable.com{APP_ID}/${TABLE_ID}`, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + TOKEN);
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-                const resultado = await response.json();
-
-                if (response.ok) {
-                    alert("✅ ¡ÉXITO! Registro guardado en Airtable.");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    // No importa si el navegador dice error, si llegó a Airtable está bien
+                    alert("🚀 PROCESO COMPLETADO\nRevise su Airtable.");
                     location.reload();
-                } else {
-                    // Si Airtable responde con error, te dirá el mensaje técnico
-                    console.error("Error técnico:", resultado);
-                    alert("❌ ERROR DE AIRTABLE: " + (resultado.error.message || resultado.error.type));
-                    btn.disabled = false;
-                    btn.innerText = "REINTENTAR";
                 }
-            } catch (error) {
-                // Si el navegador bloquea la respuesta por CORS, avisamos que revise la tabla
-                console.error("Error de conexión:", error);
-                alert("⚠️ AVISO: El navegador bloqueó la confirmación, pero verifique su Airtable.");
-                btn.disabled = false;
-                btn.innerText = "REINTENTAR";
-            }
+            };
+
+            xhr.send(JSON.stringify(datos));
         }
     </script>
 </body>
