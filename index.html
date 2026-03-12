@@ -14,14 +14,12 @@
     </style>
 </head>
 <body>
-
     <div id="login" class="card">
         <h2 style="color:var(--verde-oscuro); margin-top:0;">TERPAC LOGIN</h2>
         <input type="text" id="u" placeholder="Usuario">
         <input type="password" id="p" placeholder="Contraseña">
         <button class="btn" onclick="entrar()">INGRESAR</button>
     </div>
-
     <div id="ui-app" class="card" style="display:none;">
         <h3 style="margin-top:0; color:var(--verde-oscuro);">Captura Terpac</h3>
         <input type="text" id="id-in" placeholder="ID PILOTO (101, 102)" oninput="check()">
@@ -31,49 +29,45 @@
         <button id="btn-env" class="btn" onclick="enviar()">REGISTRAR DATOS 🚀</button>
     </div>
 
-    <!-- EL TRUCO: Formulario invisible que el navegador NO bloquea -->
-    <form id="f-inv" method="POST" target="m-inv" style="display:none;"></form>
-    <iframe name="m-inv" style="display:none;"></iframe>
-
     <script>
         const pilotos = { "101": { n: "Juan Perez" }, "102": { n: "Pedro Marmol" } };
-
         function entrar() {
             if(document.getElementById('u').value.toLowerCase().trim()=="op1" && document.getElementById('p').value=="terpac1") {
-                document.getElementById('login').style.display='none'; 
-                document.getElementById('ui-app').style.display='block';
+                document.getElementById('login').style.display='none'; document.getElementById('ui-app').style.display='block';
             } else { alert("Acceso Incorrecto"); }
         }
-
         function check() {
             const id = document.getElementById('id-in').value.trim();
             const box = document.getElementById('piloto-box');
             if(pilotos[id]) { box.innerText = "👨‍✈️ Piloto: " + pilotos[id].n; box.style.display='block'; } else { box.style.display='none'; }
         }
 
-        function enviar() {
+        async function enviar() {
             const id = document.getElementById('id-in').value.trim();
             if(!pilotos[id]) return alert("ID no encontrado");
-
             const btn = document.getElementById('btn-env');
-            btn.innerText = "Enviando...";
-            btn.disabled = true;
+            btn.innerText = "Enviando..."; btn.disabled = true;
 
             const URL_WEBHOOK = 'https://hooks.airtable.com';
+            
+            const payload = {
+                "DATOS": `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${document.getElementById('mov').value} | Prod: ${document.getElementById('prod').value}`,
+                "FECHA": new Date().toLocaleString('es-ES')
+            };
 
-            // Preparamos el texto
-            const info = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${document.getElementById('mov').value} | Prod: ${document.getElementById('prod').value}`;
-            const fecha = new Date().toLocaleString('es-ES');
-
-            // Enviamos vía formulario (Método antiguo pero infalible contra bloqueos)
-            const form = document.getElementById('f-inv');
-            form.action = URL_WEBHOOK + "?DATOS=" + encodeURIComponent(info) + "&FECHA=" + encodeURIComponent(fecha);
-            form.submit();
-
-            setTimeout(() => {
-                alert("✅ REGISTRO LANZADO\nVe a Airtable y dale a 'Probar desencadenante'.");
+            // MÉTODO POST JSON (Lo que Airtable exige)
+            fetch(URL_WEBHOOK, {
+                method: 'POST',
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                alert("✅ REGISTRO ENVIADO\nRegresa a Airtable y dale a 'Test trigger'.");
                 location.reload();
-            }, 1500);
+            }).catch(() => {
+                alert("Error de red");
+                btn.disabled = false;
+            });
         }
     </script>
 </body>
