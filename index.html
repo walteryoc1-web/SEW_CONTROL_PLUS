@@ -75,14 +75,17 @@
                 }]
             };
 
-            // URL Final de Airtable
+            // URL DE AIRTABLE
             const airtableUrl = `https://api.airtable.com{APP_ID}/${TABLE_ID}`;
+            
+            // USAMOS EL PROXY DE ALLORIGINS PARA EVITAR BLOQUEO DEL NAVEGADOR (CORS)
+            const proxyUrl = `https://api.allorigins.win{encodeURIComponent(airtableUrl)}`;
 
             try {
-                // Usamos fetch directo pero con el Token correcto
-                const response = await fetch(airtableUrl, {
+                const response = await fetch(proxyUrl, {
                     method: 'POST',
                     headers: {
+                        'X-Proxy-Method': 'POST', // Instrucción especial para el proxy
                         'Authorization': `Bearer ${TOKEN}`,
                         'Content-Type': 'application/json'
                     },
@@ -95,13 +98,13 @@
                 } else {
                     const errorData = await response.json();
                     console.error(errorData);
-                    alert("❌ ERROR DE AIRTABLE: " + (errorData.error.message || "Revisa columnas"));
+                    alert("❌ ERROR DE FORMATO: Verifica nombres de columnas (DATOS y FECHA)");
                     btn.disabled = false;
                     btn.innerText = "REINTENTAR";
                 }
             } catch (error) {
                 console.error(error);
-                alert("❌ ERROR TÉCNICO: Revisa que tu Token de Airtable tenga permisos 'data.records:write'");
+                alert("❌ ERROR TÉCNICO: Reintentando conexión...");
                 btn.disabled = false;
                 btn.innerText = "REINTENTAR";
             }
