@@ -75,10 +75,11 @@
                 }]
             };
 
+            // URL Final de Airtable
+            const airtableUrl = `https://api.airtable.com{APP_ID}/${TABLE_ID}`;
+
             try {
-                // Usamos un proxy para evitar el bloqueo CORS del navegador
-                const airtableUrl = `https://api.airtable.com{APP_ID}/${TABLE_ID}`;
-                
+                // Usamos fetch directo pero con el Token correcto
                 const response = await fetch(airtableUrl, {
                     method: 'POST',
                     headers: {
@@ -92,15 +93,15 @@
                     alert("✅ REGISTRO ENVIADO A AIRTABLE");
                     location.reload();
                 } else {
-                    const errorJson = await response.json();
-                    console.error(errorJson);
-                    alert("❌ ERROR DE FORMATO: Revisa que las columnas se llamen DATOS y FECHA");
+                    const errorData = await response.json();
+                    console.error(errorData);
+                    alert("❌ ERROR DE AIRTABLE: " + (errorData.error.message || "Revisa columnas"));
                     btn.disabled = false;
                     btn.innerText = "REINTENTAR";
                 }
             } catch (error) {
                 console.error(error);
-                alert("❌ ERROR TÉCNICO: Reintentando con método alternativo...");
+                alert("❌ ERROR TÉCNICO: Revisa que tu Token de Airtable tenga permisos 'data.records:write'");
                 btn.disabled = false;
                 btn.innerText = "REINTENTAR";
             }
@@ -108,4 +109,3 @@
     </script>
 </body>
 </html>
-
