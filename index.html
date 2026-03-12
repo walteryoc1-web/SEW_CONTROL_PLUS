@@ -58,22 +58,24 @@
             btn.innerText = "Enviando...";
             btn.disabled = true;
 
-            // TU URL DE GOOGLE APPS SCRIPT
-            const URL_SCRIPT = 'https://script.google.com';
+            // TU URL DE GOOGLE APPS SCRIPT ACTUALIZADA
+            const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyHshm-0AfC3qWiFMqCoF7XXHqWzib03M7eTNA0hBkrdEGR74wMEAT-0yC2OYeaREx6/exec';
 
             const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${document.getElementById('mov').value} | Prod: ${document.getElementById('prod').value}`;
 
-            // Enviamos el dato al Excel de Google
+            // MÉTODO DEFINITIVO PARA GOOGLE SHEETS
             fetch(URL_SCRIPT, {
                 method: 'POST',
-                mode: 'no-cors', // Evita bloqueos y peticiones de cuenta
+                mode: 'no-cors', // Fundamental para saltar seguridad
+                cache: 'no-cache',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ "datos": textoFinal })
             }).then(() => {
-                alert("✅ REGISTRO EXITOSO\nLos datos ya están en tu Google Sheet.");
+                alert("✅ REGISTRO EXITOSO\nRevisa tu Google Sheet.");
                 location.reload();
             }).catch(err => {
-                alert("Error al conectar.");
+                console.error(err);
+                alert("Error de conexión.");
                 btn.disabled = false;
                 btn.innerText = "REINTENTAR";
             });
