@@ -58,8 +58,8 @@
             btn.innerText = "Enviando...";
             btn.disabled = true;
 
-            // TU URL DE GOOGLE APPS SCRIPT ACTUALIZADA
-            const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyHshm-0AfC3qWiFMqCoF7XXHqWzib03M7eTNA0hBkrdEGR74wMEAT-0yC2OYeaREx6/exec';
+            // TU NUEVA URL DE GOOGLE APPS SCRIPT
+            const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxYMpx1428fTz4g7esBgP5WLHFkm9kSZaIQjUFjDgGoMBMt5Emb1pSamzDOauCt7mE/exec';
 
             const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${document.getElementById('mov').value} | Prod: ${document.getElementById('prod').value}`;
 
@@ -70,11 +70,11 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ "datos": textoFinal })
             }).then(() => {
-                alert("✅ REGISTRO LANZADO\nVerifica tu Google Sheet.");
+                alert("✅ REGISTRO ENVIADO\nRevisa tu Google Sheet.");
                 location.reload();
             }).catch(err => {
                 console.error(err);
-                alert("Error al enviar.");
+                alert("Error de envío.");
                 btn.disabled = false;
                 btn.innerText = "REINTENTAR";
             });
