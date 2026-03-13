@@ -6,13 +6,13 @@
     <title>SISTEMA TERPAC LTDA</title>
     <style>
         :root { --verde: #ABED87; --verde-oscuro: #5a8a3d; --gris-bg: #f4f7f6; --azul-reloj: #3498db; }
-        body { font-family: sans-serif; background: var(--gris-bg); padding: 0; margin: 0; text-align: center; }
+        body { font-family: sans-serif; background: var(--gris-bg); padding: 15px; text-align: center; margin: 0; }
         
         /* ESTILO PARA LOGIN Y OPERADOR (CENTRADOS) */
-        .card-centrada { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 90%; max-width: 400px; margin: 50px auto; border-top: 8px solid var(--verde); box-sizing: border-box; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 400px; margin: 20px auto; border-top: 8px solid var(--verde); }
 
         /* ESTILO PARA SUPERVISOR (ANCHO COMPLETO) */
-        .card-full { background: white; padding: 20px; width: 100%; min-height: 100vh; margin: 0; border-top: 8px solid var(--verde); box-sizing: border-box; display: none; }
+        .card-full { background: white; padding: 20px; width: 100%; min-height: 100vh; margin: 0; border-top: 8px solid var(--verde); box-sizing: border-box; display: none; position: absolute; top: 0; left: 0; z-index: 100; }
         
         input, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
         .btn { background: var(--verde); border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; color: #333; font-size: 16px; }
@@ -39,7 +39,7 @@
 <body>
 
     <!-- PANTALLA LOGIN -->
-    <div id="login" class="card-centrada">
+    <div id="login" class="card">
         <h2 style="color:var(--verde-oscuro); margin-top:0;">TERPAC LOGIN</h2>
         <input type="text" id="u" placeholder="Usuario">
         <input type="password" id="p" placeholder="Contraseña">
@@ -47,17 +47,17 @@
     </div>
 
     <!-- PANTALLA OPERADOR -->
-    <div id="ui-app" class="card-centrada" style="display:none;">
+    <div id="ui-app" class="card" style="display:none;">
         <h3 style="margin-top:0; color:var(--verde-oscuro);">Captura Terpac</h3>
         <input type="text" id="id-in" placeholder="ID PILOTO" oninput="check()">
         <div id="piloto-box"></div>
         <select id="mov"><option>Arribo</option><option>Entrada</option><option>Salida</option></select>
         <select id="prod"><option>SBM</option><option>YC (USA)</option><option>SWW</option></select>
         <button id="btn-env" class="btn" onclick="enviar()">REGISTRAR DATOS 🚀</button>
-        <button class="btn-salir" onclick="location.reload()">CERRAR SESIÓN</button>
+        <button class="btn btn-salir" onclick="location.reload()">CERRAR SESIÓN</button>
     </div>
 
-    <!-- PANTALLA SUPERVISOR (FULL WIDTH) -->
+    <!-- PANTALLA SUPERVISOR -->
     <div id="ui-supervisor" class="card-full">
         <div class="live-status"><div class="dot"></div> MONITOR TERPAC - PUERTO QUETZAL</div>
         <div class="pildoras-horizontal">
@@ -126,6 +126,7 @@
                 alert("✅ REGISTRO ENVIADO");
                 location.reload();
             }).catch(err => {
+                console.error(err);
                 alert("Error de envío.");
                 btn.disabled = false; btn.innerText = "REINTENTAR";
             });
