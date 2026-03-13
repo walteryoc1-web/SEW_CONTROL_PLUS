@@ -70,7 +70,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ "datos": textoFinal })
             }).then(() => {
-                alert("✅ REGISTRO ENVIADO\nRevisa tu Google Sheet.");
+                alert("✅ REGISTRO ENVIADO");
                 location.reload();
             }).catch(err => {
                 console.error(err);
@@ -82,4 +82,5 @@
     </script>
 </body>
 </html>
+
 
