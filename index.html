@@ -8,25 +8,11 @@
         :root { --verde: #ABED87; --verde-oscuro: #5a8a3d; --gris-bg: #f4f7f6; --azul-reloj: #3498db; }
         body { font-family: sans-serif; background: var(--gris-bg); padding: 0; margin: 0; text-align: center; }
         
-        /* CONTENEDOR PRINCIPAL QUE ABARCA TODO EL ANCHO */
-        .card { 
-            background: white; 
-            padding: 20px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-            width: 100%; 
-            min-height: 100vh; /* Para que ocupe todo el alto si es necesario */
-            margin: 0; 
-            border-top: 8px solid var(--verde); 
-            box-sizing: border-box;
-        }
+        /* ESTILO PARA LOGIN Y OPERADOR (CENTRADOS) */
+        .card-centrada { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 90%; max-width: 400px; margin: 50px auto; border-top: 8px solid var(--verde); box-sizing: border-box; }
 
-        /* Ajuste para el Login y Operador (estos sí se ven mejor centrados) */
-        .compact-card { 
-            max-width: 400px; 
-            margin: 50px auto; 
-            border-radius: 20px; 
-            min-height: auto;
-        }
+        /* ESTILO PARA SUPERVISOR (ANCHO COMPLETO) */
+        .card-full { background: white; padding: 20px; width: 100%; min-height: 100vh; margin: 0; border-top: 8px solid var(--verde); box-sizing: border-box; display: none; }
         
         input, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
         .btn { background: var(--verde); border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; color: #333; font-size: 16px; }
@@ -34,46 +20,16 @@
         
         #piloto-box { font-weight: bold; color: var(--verde-oscuro); margin: 10px 0; display: none; padding: 15px; background: #f0fdf0; border-radius: 10px; border: 1px dashed var(--verde); text-align: left; }
 
-        /* PILDORAS HORIZONTALES - AHORA MÁS GRANDES */
-        .pildoras-horizontal { 
-            display: flex; 
-            justify-content: space-around; 
-            gap: 15px; 
-            margin-bottom: 25px; 
-            flex-wrap: wrap; /* Para que en celular no se amontonen */
-        }
-        .pildora { 
-            background: white; 
-            padding: 20px 10px; 
-            border-radius: 15px; 
-            flex: 1; 
-            min-width: 150px; 
-            text-align: center; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-            border-bottom: 8px solid var(--verde-oscuro); 
-        }
+        /* DASHBOARD SUPERVISOR */
+        .pildoras-horizontal { display: flex; justify-content: space-around; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .pildora { background: white; padding: 20px 10px; border-radius: 15px; flex: 1; min-width: 150px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-bottom: 8px solid var(--verde-oscuro); }
         .pildora h3 { font-size: 14px; margin: 0 0 10px 0; color: #777; text-transform: uppercase; }
         .pildora p { font-size: 35px; font-weight: bold; margin: 0; color: #222; }
         
-        /* RELOJ Y FECHA */
         .reloj-container { margin: 20px 0; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         #reloj { font-size: 24px; font-weight: bold; color: white; background: var(--azul-reloj); padding: 8px 20px; border-radius: 30px; }
         #fecha-actual { font-size: 16px; color: #555; font-weight: bold; text-transform: capitalize; }
-
-        /* CONTENEDOR GRÁFICA AL 100% */
-        #contenedor-grafica { 
-            width: 100%; 
-            height: 350px; /* Más alta para que luzca en pantalla grande */
-            background: #fdfdfd; 
-            border: 2px solid #eee; 
-            border-radius: 15px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: #bbb; 
-            font-size: 18px; 
-            margin-top: 10px;
-        }
+        #contenedor-grafica { width: 100%; height: 350px; background: #fdfdfd; border: 2px solid #eee; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 18px; margin-top: 10px; }
 
         .live-status { color: #2ecc71; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px; justify-content: center; margin: 20px 0; }
         .dot { width: 10px; height: 10px; background: #2ecc71; border-radius: 50%; animation: pulse 2s infinite; }
@@ -82,16 +38,16 @@
 </head>
 <body>
 
-    <!-- LOGIN -->
-    <div id="login" class="card compact-card">
+    <!-- PANTALLA LOGIN -->
+    <div id="login" class="card-centrada">
         <h2 style="color:var(--verde-oscuro); margin-top:0;">TERPAC LOGIN</h2>
         <input type="text" id="u" placeholder="Usuario">
         <input type="password" id="p" placeholder="Contraseña">
         <button class="btn" onclick="entrar()">INGRESAR</button>
     </div>
 
-    <!-- OPERADOR -->
-    <div id="ui-app" class="card compact-card" style="display:none;">
+    <!-- PANTALLA OPERADOR -->
+    <div id="ui-app" class="card-centrada" style="display:none;">
         <h3 style="margin-top:0; color:var(--verde-oscuro);">Captura Terpac</h3>
         <input type="text" id="id-in" placeholder="ID PILOTO" oninput="check()">
         <div id="piloto-box"></div>
@@ -101,33 +57,20 @@
         <button class="btn-salir" onclick="location.reload()">CERRAR SESIÓN</button>
     </div>
 
-    <!-- SUPERVISOR FULL WIDTH -->
-    <div id="ui-supervisor" class="card" style="display:none;">
-        <div class="live-status"><div class="dot"></div> MONITOR TERPAC - PUERTO QUETZAL (CONTROL DE RENDIMIENTO)</div>
-        
+    <!-- PANTALLA SUPERVISOR (FULL WIDTH) -->
+    <div id="ui-supervisor" class="card-full">
+        <div class="live-status"><div class="dot"></div> MONITOR TERPAC - PUERTO QUETZAL</div>
         <div class="pildoras-horizontal">
-            <div class="pildora" style="border-bottom-color: #f1c40f;">
-                <h3>Pendiente Ingreso</h3>
-                <p>08</p>
-            </div>
-            <div class="pildora" style="border-bottom-color: #3498db;">
-                <h3>En Proceso Carga</h3>
-                <p>04</p>
-            </div>
-            <div class="pildora" style="border-bottom-color: #2ecc71;">
-                <h3>Total Despachadas</h3>
-                <p>12</p>
-            </div>
+            <div class="pildora" style="border-bottom-color: #f1c40f;"><h3>Pendiente Ingreso</h3><p>08</p></div>
+            <div class="pildora" style="border-bottom-color: #3498db;"><h3>En Proceso Carga</h3><p>04</p></div>
+            <div class="pildora" style="border-bottom-color: #2ecc71;"><h3>Total Despachadas</h3><p>12</p></div>
         </div>
-
         <div class="reloj-container">
             <div id="fecha-actual">Cargando...</div>
             <div id="reloj">00:00:00</div>
         </div>
-
-        <div id="contenedor-grafica">Espacio para Gráfica de Análisis de Datos</div>
-
-        <button class="btn-salir" onclick="location.reload()">SALIR AL PANEL DE CONTROL</button>
+        <div id="contenedor-grafica">Área para Gráfica de Rendimiento</div>
+        <button class="btn-salir" onclick="location.reload()">SALIR AL PANEL</button>
     </div>
 
     <script>
@@ -137,7 +80,6 @@
             const user = document.getElementById('u').value.toLowerCase().trim();
             const pass = document.getElementById('p').value;
             if(user == "operador 1" && pass == "terpac1") {
-                document.getElementById('login').classList.remove('compact-card'); // Reset para consistencia
                 document.getElementById('login').style.display='none'; 
                 document.getElementById('ui-app').style.display='block';
             } 
