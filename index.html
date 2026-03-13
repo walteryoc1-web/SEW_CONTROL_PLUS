@@ -44,12 +44,38 @@
         <div id="piloto-box" class="info-box"></div>
         
         <select id="mov">
-            <option>1) Arribo</option><option>2) Entrada</option>
-            <option>3) Control 1</option><option>4) Salida</option>
+            <option>Arribo</option><option>Entrada</option>
+            <option>Control 1</option><option>Salida</option>
         </select>
 
-        <input type="text" id="prod-in" placeholder="SIGLAS PRODUCTO" oninput="checkProducto()" style="text-transform: uppercase;">
-        <div id="prod-box" class="info-box"></div>
+        <select id="prod-select">
+            <option value="" disabled selected>SELECCIONE PRODUCTO</option>
+            <option value="SBM">SBM - HARINA DE SOYA AMERICANA</option>
+            <option value="YC(USA)">YC(USA) - MAIZ AMARILLO AMERICANO</option>
+            <option value="YC(BR)">YC(BR) - MAIZ AMARILLO BRASIL</option>
+            <option value="YC(ARG)">YC(ARG) - MAIZ AMARILLO ARGENTINO</option>
+            <option value="WC(USA)">WC(USA) - MAIZ BLANCO AMERICANO</option>
+            <option value="SRW">SRW - TRIGO ROJO SUAVE</option>
+            <option value="HARW">HARW - TRIGO ROJO INVERNAL</option>
+            <option value="DDGS">DDGS - GRANO DESTILADO</option>
+            <option value="CPSR">CPSR - TRIGO ROJO CANADIENSE</option>
+            <option value="R">R - ARROZ CON CASCARA</option>
+            <option value="MALTA">MALTA - MALTA PILSEN</option>
+            <option value="SWW">SWW - TRIGO BLANCO SUAVE</option>
+            <option value="LGBR">LGBR - ARROZ INTEGRAL DE GRANO LARGO</option>
+            <option value="SBM(ARG)">SBM(ARG) - HARINA DE SOYA ARGENTINA</option>
+            <option value="YSB">YSB - FRIJOL SOYA AMARILLO</option>
+            <option value="WC(ZAF)">WC(ZAF) - MAIZ BLANCO SUDAFRICA</option>
+            <option value="SBHP">SBHP - PELET DE CASCARA DE SOYA</option>
+            <option value="HADW">HADW - TRIGO AMBAR DURO</option>
+            <option value="DNSW">DNSW - TRIGO OSCURO PRIMAVERAL</option>
+            <option value="CWRS">CWRS - TRIGO ROJO CANADIENSE</option>
+            <option value="CGM">CGM - GLUTEN DE MAIZ</option>
+            <option value="ONB">ONB - AVENA PELADA EN GRANO</option>
+            <option value="RP">RP - ARROZ PARBORIZADO</option>
+            <option value="R(PY)">R(PY) - ARROZ CON CASCARA PARAGUAY</option>
+            <option value="CPW">CPW - TRIGO PLUS CANADIENSE</option>
+        </select>
         
         <button id="btn-env" class="btn" onclick="enviar()">REGISTRAR DATOS 🚀</button>
         <button class="btn-salir" onclick="location.reload()">CERRAR SESIÓN</button>
@@ -72,39 +98,7 @@
     </div>
 
     <script>
-        const pilotos = { 
-            "101": { n: "Juan Perez" }, 
-            "102": { n: "Pedro Marmol" }
-        };
-
-        const productos = {
-            "SBM": { n: "HARINA DE SOYA AMERICANA" },
-            "YC(USA)": { n: "MAIZ AMARILLO AMERICANO" },
-            "YC(BR)": { n: "MAIZ AMARILLO BRASIL" },
-            "YC(ARG)": { n: "MAIZ AMARILLO ARGENTINO" },
-            "WC(USA)": { n: "MAIZ BLANCO AMERICANO" },
-            "SRW": { n: "TRIGO ROJO SUAVE" },
-            "HARW": { n: "TRIGO ROJO INVERNAL" },
-            "DDGS": { n: "GRANO DESTILADO" },
-            "CPSR": { n: "TRIGO ROJO CANADIENSE" },
-            "R": { n: "ARROZ CON CASCARA" },
-            "MALTA": { n: "MALTA PILSEN" },
-            "SWW": { n: "TRIGO BLANCO SUAVE" },
-            "LGBR": { n: "ARROZ INTEGRAL DE GRANO LARGO" },
-            "SBM(ARG)": { n: "HARINA DE SOYA ARGENTINA" },
-            "YSB": { n: "FRIJOL SOYA AMARILLO" },
-            "WC(ZAF)": { n: "MAIZ BLANCO SUDAFRICA" },
-            "SBHP": { n: "PELET DE CASCARA DE SOYA" },
-            "HADW": { n: "TRIGO AMBAR DURO" },
-            "DNSW": { n: "TRIGO OSCURO PRIMAVERAL" },
-            "CWRS": { n: "TRIGO ROJO CANADIENSE" },
-            "CGM": { n: "GLUTEN DE MAIZ" },
-            "ONB": { n: "AVENA PELADA EN GRANO" },
-            "RP": { n: "ARROZ PARBORIZADO" },
-            "R(PY)": { n: "ARROZ CON CASCARA PARAGUAY" },
-            "CPW": { n: "TRIGO PLUS CANADIENSE" }
-        };
-
+        const pilotos = { "101": { n: "Juan Perez" }, "102": { n: "Pedro Marmol" } };
         const URL_SCRIPT = 'https://script.google.com';
 
         function entrar() {
@@ -146,32 +140,25 @@
             } else { box.style.display='none'; }
         }
 
-        function checkProducto() {
-            const cod = document.getElementById('prod-in').value.trim().toUpperCase();
-            const box = document.getElementById('prod-box');
-            if(productos[cod]) { 
-                box.innerText = "📦 Prod: " + productos[cod].n; box.style.display='block'; 
-            } else { box.style.display='none'; }
-        }
-
         function enviar() {
             const id = document.getElementById('id-in').value.trim();
-            const cod = document.getElementById('prod-in').value.trim().toUpperCase();
+            const prod = document.getElementById('prod-select').value;
+            
             if(!pilotos[id]) return alert("ID Piloto no válido");
-            if(!productos[cod]) return alert("Siglas de Producto no válidas");
+            if(!prod) return alert("Seleccione un Producto");
 
             const btn = document.getElementById('btn-env');
             btn.innerText = "Enviando..."; btn.disabled = true;
+            
             const mov = document.getElementById('mov').value;
-            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${productos[cod].n}`;
+            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod}`;
 
             fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: textoFinal })
             .then(() => {
                 alert("✅ Registro Guardado");
                 document.getElementById('id-in').value = "";
-                document.getElementById('prod-in').value = "";
+                document.getElementById('prod-select').selectedIndex = 0;
                 document.getElementById('piloto-box').style.display='none';
-                document.getElementById('prod-box').style.display='none';
             })
             .catch(() => alert("Error de conexión"))
             .finally(() => { btn.innerText = "REGISTRAR DATOS 🚀"; btn.disabled = false; });
