@@ -11,10 +11,21 @@
         input, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
         .btn { background: var(--verde); border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; color: #333; font-size: 16px; }
         #piloto-box { font-weight: bold; color: var(--verde-oscuro); margin: 10px 0; display: none; padding: 15px; background: #f0fdf0; border-radius: 10px; border: 1px dashed var(--verde); text-align: left; }
+
+        /* ESTILOS NUEVOS DASHBOARD SUPERVISOR */
+        .titulos-seccion { font-size: 13px; font-weight: bold; color: #555; text-transform: uppercase; margin-bottom: 15px; border-left: 5px solid var(--verde-oscuro); padding-left: 10px; text-align: left; margin-top: 20px; }
+        .pildoras { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .pildora { background: white; padding: 15px; border-radius: 40px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 10px solid var(--verde-oscuro); display: flex; justify-content: space-around; align-items: center; }
+        .pildora h3 { font-size: 10px; margin: 0; color: #777; text-align: left; max-width: 75px; text-transform: uppercase; }
+        .pildora p { font-size: 26px; font-weight: bold; margin: 0; color: #222; }
+        .live-status { color: #2ecc71; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 10px; }
+        .dot { width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
+    <!-- PANTALLA LOGIN -->
     <div id="login" class="card">
         <h2 style="color:var(--verde-oscuro); margin-top:0;">TERPAC USUARIO</h2>
         <input type="text" id="u" placeholder="Usuario">
@@ -22,6 +33,7 @@
         <button class="btn" onclick="entrar()">INGRESAR</button>
     </div>
 
+    <!-- PANTALLA OPERADOR (CAPTURAR DATOS) -->
     <div id="ui-app" class="card" style="display:none;">
         <h3 style="margin-top:0; color:var(--verde-oscuro);">Captura Terpac</h3>
         <input type="text" id="id-in" placeholder="ID PILOTO (101, 102)" oninput="check()">
@@ -29,16 +41,48 @@
         <select id="mov"><option>Arribo</option><option>Entrada</option><option>Salida</option></select>
         <select id="prod"><option>SBM</option><option>YC (USA)</option><option>SWW</option></select>
         <button id="btn-env" class="btn" onclick="enviar()">REGISTRAR DATOS 🚀</button>
+        <button onclick="location.reload()" style="margin-top:20px; background:none; border:none; color:gray; cursor:pointer; text-decoration:underline;">Cerrar Sesión</button>
+    </div>
+
+    <!-- PANTALLA SUPERVISOR (DASHBOARD) -->
+    <div id="ui-supervisor" class="card" style="display:none; max-width:450px;">
+        <div class="live-status"><div class="dot"></div> MONITOR EN TIEMPO REAL</div>
+        <h3 style="margin-top:0; color:var(--verde-oscuro);">Panel Supervisor</h3>
+        
+        <div class="titulos-seccion">Estadísticas del Día</div>
+        <div class="pildoras">
+            <div class="pildora"><h3>Pilotos Activos</h3><p>12</p></div>
+            <div class="pildora" style="border-left-color: orange;"><h3>Pendientes</h3><p>05</p></div>
+            <div class="pildora" style="border-left-color: #3498db;"><h3>Salidas</h3><p>28</p></div>
+            <div class="pildora" style="border-left-color: #e74c3c;"><h3>Alertas</h3><p>0</p></div>
+        </div>
+
+        <div class="titulos-seccion">Historial Reciente</div>
+        <div style="text-align:left; font-size: 13px; color:#555; background:#f9f9f9; padding:10px; border-radius:10px;">
+            <div>🕒 10:45 - Piloto 101 - Entrada</div>
+            <div style="margin-top:5px;">🕒 10:32 - Piloto 104 - Salida</div>
+            <div style="margin-top:5px;">🕒 10:15 - Piloto 102 - Arribo</div>
+        </div>
+
+        <button class="btn" onclick="location.reload()" style="margin-top:20px; background:#eee; color:#333;">SALIR AL LOGIN</button>
     </div>
 
     <script>
         const pilotos = { "101": { n: "Juan Perez" }, "102": { n: "Pedro Marmol" } };
 
         function entrar() {
-            if(document.getElementById('u').value.toLowerCase().trim()=="operador 1" && document.getElementById('p').value=="terpac1") {
+            const user = document.getElementById('u').value.toLowerCase().trim();
+            const pass = document.getElementById('p').value;
+
+            if(user == "operador 1" && pass == "terpac1") {
                 document.getElementById('login').style.display='none'; 
                 document.getElementById('ui-app').style.display='block';
-            } else { alert("Acceso Incorrecto"); }
+            } 
+            else if(user == "supervisor 1" && pass == "terpac2") {
+                document.getElementById('login').style.display='none'; 
+                document.getElementById('ui-supervisor').style.display='block';
+            }
+            else { alert("Acceso Incorrecto"); }
         }
 
         function check() {
@@ -58,12 +102,10 @@
             btn.innerText = "Enviando...";
             btn.disabled = true;
 
-            // TU NUEVA URL DE GOOGLE APPS SCRIPT
             const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxYMpx1428fTz4g7esBgP5WLHFkm9kSZaIQjUFjDgGoMBMt5Emb1pSamzDOauCt7mE/exec';
 
             const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${document.getElementById('mov').value} | Prod: ${document.getElementById('prod').value}`;
 
-            // MÉTODO POST PARA GOOGLE SHEETS
             fetch(URL_SCRIPT, {
                 method: 'POST',
                 mode: 'no-cors', 
@@ -82,4 +124,3 @@
     </script>
 </body>
 </html>
-
