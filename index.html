@@ -93,15 +93,16 @@
 
     <script>
         // 1. LISTA DE PILOTOS
+// 1. LISTA DE PILOTOS ACTUALIZADA
 const pilotos = { 
     "101": { n: "Carlos Hernandez", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-834BPT" }, 
     "102": { n: "Mynor Josue Guzman Rivera", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-826BZQ" } 
 };
 
-// 2. TU URL (Asegúrate que sea la que termina en REx6/exec)
+// 2. TU URL REAL (CORREGIDA PARA QUE CONECTE)
 const URL_SCRIPT = 'https://script.google.com';
 
-// 3. FUNCIÓN PARA ENTRAR (LA QUE HACÍA FALTA)
+// 3. FUNCIÓN PARA ENTRAR (LOGIN)
 function entrar() {
     const user = document.getElementById('u').value.toLowerCase().trim();
     const pass = document.getElementById('p').value;
@@ -119,7 +120,7 @@ function entrar() {
     else { alert("Acceso Incorrecto"); }
 }
 
-// 4. FUNCIÓN PARA MOSTRAR NOMBRE AL ESCRIBIR ID
+// 4. FUNCIÓN PARA MOSTRAR NOMBRE AL ESCRIBIR ID (CHECK)
 function check() {
     const id = document.getElementById('id-in').value.trim();
     const box = document.getElementById('piloto-box');
@@ -131,7 +132,7 @@ function check() {
     }
 }
 
-// 5. FUNCIÓN PARA ENVIAR (CON TODOS LOS DATOS)
+// 5. FUNCIÓN PARA ENVIAR (CON TODOS LOS DATOS SEPARADOS)
 function enviar() {
     const id = document.getElementById('id-in').value.trim();
     const piloto = pilotos[id];
@@ -142,10 +143,18 @@ function enviar() {
     const mov = document.getElementById('mov').value;
     const prod = document.getElementById('prod').value;
 
-    btn.innerText = "Enviando..."; btn.disabled = true;
+    btn.innerText = "Enviando..."; 
+    btn.disabled = true;
 
+    // Preparamos el paquete con los 6 datos para las columnas del Excel
     const datosParaEnviar = {
-        id: id, n: piloto.n, t: piloto.t, c: piloto.c, p: piloto.p, m: mov, pr: prod
+        id: id,
+        n: piloto.n,
+        t: piloto.t,
+        c: piloto.c,
+        p: piloto.p,
+        m: mov,
+        pr: prod
     };
 
     fetch(URL_SCRIPT, {
@@ -155,18 +164,23 @@ function enviar() {
         body: JSON.stringify(datosParaEnviar)
     })
     .then(() => {
-        alert("¡Datos enviados!");
-        btn.innerText = "Enviar"; btn.disabled = false;
+        alert("✅ Registro Exitoso");
+        btn.innerText = "REGISTRAR DATOS 🚀";
+        btn.disabled = false;
+        
+        // Limpiamos los campos
         document.getElementById('id-in').value = "";
         document.getElementById('piloto-box').style.display = 'none';
     })
     .catch(err => {
-        alert("Error de red");
-        btn.innerText = "Enviar"; btn.disabled = false;
+        alert("Error de red o envío");
+        console.error(err);
+        btn.innerText = "REGISTRAR DATOS 🚀";
+        btn.disabled = false;
     });
 }
 
-// 6. RELOJ Y PÍLDORAS (Para el Supervisor)
+// 6. RELOJ Y PÍLDORAS
 function iniciarReloj() {
     setInterval(() => {
         const ahora = new Date();
@@ -182,5 +196,5 @@ async function actualizarPildoras() {
         document.getElementById('count-pendientes').innerText = data.pendientes.toString().padStart(2, '0');
         document.getElementById('count-proceso').innerText = data.proceso.toString().padStart(2, '0');
         document.getElementById('count-despachadas').innerText = data.despachadas.toString().padStart(2, '0');
-    } catch (e) { console.log("Error en pildoras (necesitas función doGet en Sheets)"); }
+    } catch (e) { console.log("Error cargando pildoras"); }
 }
