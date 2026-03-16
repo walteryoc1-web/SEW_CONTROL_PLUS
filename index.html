@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -92,7 +92,54 @@
     </div>
 
     <script>
-              function enviar() {
+        const pilotos = { "101": { n: "Carlos Hernandez", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-834BPT" }, 
+                        "102": { n: "Mynor Josue Guzman Rivera", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-826BZQ" } };
+        // URL ACTUALIZADA
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxYMpx1428fTz4g7esBgP5WLHFkm9kSZaIQjUFjDgGoMBMt5Emb1pSamzDOauCt7mE/exec';
+
+        function entrar() {
+            const user = document.getElementById('u').value.toLowerCase().trim();
+            const pass = document.getElementById('p').value;
+
+            if(user == "operador 1" && pass == "terpac1") {
+                document.getElementById('login').style.display='none'; 
+                document.getElementById('ui-app').style.display='block';
+            } 
+            else if(user == "supervisor 1" && pass == "terpac2") {
+                document.getElementById('login').style.display='none'; 
+                document.getElementById('ui-supervisor').style.display='block';
+                iniciarReloj();
+                actualizarPildoras();
+            }
+            else { alert("Acceso Incorrecto"); }
+        }
+
+        async function actualizarPildoras() {
+            try {
+                // Hacemos una petición GET al script para obtener los conteos
+                const response = await fetch(URL_SCRIPT);
+                const data = await response.json();
+                document.getElementById('count-pendientes').innerText = data.pendientes.toString().padStart(2, '0');
+                document.getElementById('count-proceso').innerText = data.proceso.toString().padStart(2, '0');
+                document.getElementById('count-despachadas').innerText = data.despachadas.toString().padStart(2, '0');
+            } catch (e) { console.log("Error cargando pildoras"); }
+        }
+
+        function iniciarReloj() {
+            setInterval(() => {
+                const ahora = new Date();
+                document.getElementById('reloj').innerText = ahora.toLocaleTimeString('es-GT', { hour12: false });
+                document.getElementById('fecha-actual').innerText = ahora.toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            }, 1000);
+        }
+
+        function check() {
+            const id = document.getElementById('id-in').value.trim();
+            const box = document.getElementById('piloto-box');
+            if(pilotos[id]) { box.innerText = "👨‍✈️ Piloto: " + pilotos[id].n; box.style.display='block'; } else { box.style.display='none'; }
+        }
+
+        function enviar() {
             const id = document.getElementById('id-in').value.trim();
             if(!pilotos[id]) return alert("ID no encontrado");
             const btn = document.getElementById('btn-env');
@@ -120,6 +167,3 @@
     </script>
 </body>
 </html>
-
-
-
