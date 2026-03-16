@@ -100,12 +100,7 @@
 
             const mov = document.getElementById('mov').value;
             const prod = document.getElementById('prod').value;
-            
-            // Juntamos los datos del piloto para no escribir tanto abajo
-            const p = pilotos[id];
-
-            // ESTA ES LA LÍNEA QUE CAMBIE: Agregué Transp, Cliente y Placa a tu frase original
-            const textoFinal = `ID: ${id} | Piloto: ${p.n} | Transp: ${p.t} | Cliente: ${p.c} | Placa: ${p.p} | Mov: ${mov} | Prod: ${prod}`;
+            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod} | Transp: ${pilotos[id].t} | Cliente: ${pilotos[id].c} | Placa: ${pilotos[id].p}`;
 
             fetch(URL_SCRIPT, {
                 method: 'POST',
@@ -122,3 +117,9 @@
                 btn.disabled = false;
             });
         }
+    </script>
+</body>
+</html>
+
+
+
