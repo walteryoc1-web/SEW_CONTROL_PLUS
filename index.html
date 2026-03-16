@@ -93,16 +93,15 @@
 
     <script>
         // 1. LISTA DE PILOTOS
-// 1. LISTA DE PILOTOS ACTUALIZADA
 const pilotos = { 
     "101": { n: "Carlos Hernandez", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-834BPT" }, 
     "102": { n: "Mynor Josue Guzman Rivera", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-826BZQ" } 
 };
 
-// 2. TU URL REAL (CORREGIDA PARA QUE CONECTE)
+// 2. TU URL REAL
 const URL_SCRIPT = 'https://script.google.com';
 
-// 3. FUNCIÓN PARA ENTRAR (LOGIN)
+// 3. FUNCIÓN ENTRAR (LOGIN)
 function entrar() {
     const user = document.getElementById('u').value.toLowerCase().trim();
     const pass = document.getElementById('p').value;
@@ -115,12 +114,11 @@ function entrar() {
         document.getElementById('login').style.display='none'; 
         document.getElementById('ui-supervisor').style.display='block';
         iniciarReloj();
-        actualizarPildoras();
     }
     else { alert("Acceso Incorrecto"); }
 }
 
-// 4. FUNCIÓN PARA MOSTRAR NOMBRE AL ESCRIBIR ID (CHECK)
+// 4. FUNCIÓN CHECK
 function check() {
     const id = document.getElementById('id-in').value.trim();
     const box = document.getElementById('piloto-box');
@@ -132,69 +130,46 @@ function check() {
     }
 }
 
-// 5. FUNCIÓN PARA ENVIAR (CON TODOS LOS DATOS SEPARADOS)
+// 5. FUNCIÓN ENVIAR (VERSIÓN ORIGINAL CON DATOS EXTRAS)
 function enviar() {
     const id = document.getElementById('id-in').value.trim();
-    const piloto = pilotos[id];
-
-    if(!piloto) return alert("ID no encontrado");
-
+    if(!pilotos[id]) return alert("ID no encontrado");
+    
     const btn = document.getElementById('btn-env');
-    const mov = document.getElementById('mov').value;
-    const prod = document.getElementById('prod').value;
-
     btn.innerText = "Enviando..."; 
     btn.disabled = true;
 
-    // Preparamos el paquete con los 6 datos para las columnas del Excel
-    const datosParaEnviar = {
-        id: id,
-        n: piloto.n,
-        t: piloto.t,
-        c: piloto.c,
-        p: piloto.p,
-        m: mov,
-        pr: prod
-    };
+    const mov = document.getElementById('mov').value;
+    const prod = document.getElementById('prod').value;
+    const p = pilotos[id];
+
+    // ARMAMOS LA FRASE AMONTONADA PERO CON TODO:
+    const textoFinal = `ID: ${id} | Piloto: ${p.n} | Transp: ${p.t} | Cliente: ${p.c} | Placa: ${p.p} | Mov: ${mov} | Prod: ${prod}`;
 
     fetch(URL_SCRIPT, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datosParaEnviar)
+        body: JSON.stringify({ datos: textoFinal }) // Mandamos la frase al campo "datos" de tu Script
     })
     .then(() => {
         alert("✅ Registro Exitoso");
-        btn.innerText = "REGISTRAR DATOS 🚀";
-        btn.disabled = false;
-        
-        // Limpiamos los campos
         document.getElementById('id-in').value = "";
-        document.getElementById('piloto-box').style.display = 'none';
+        document.getElementById('piloto-box').style.display='none';
     })
-    .catch(err => {
-        alert("Error de red o envío");
-        console.error(err);
+    .catch(() => {
+        alert("Error de envío");
+    })
+    .finally(() => {
         btn.innerText = "REGISTRAR DATOS 🚀";
         btn.disabled = false;
     });
 }
 
-// 6. RELOJ Y PÍLDORAS
+// 6. RELOJ
 function iniciarReloj() {
     setInterval(() => {
         const ahora = new Date();
         document.getElementById('reloj').innerText = ahora.toLocaleTimeString('es-GT', { hour12: false });
         document.getElementById('fecha-actual').innerText = ahora.toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     }, 1000);
-}
-
-async function actualizarPildoras() {
-    try {
-        const response = await fetch(URL_SCRIPT);
-        const data = await response.json();
-        document.getElementById('count-pendientes').innerText = data.pendientes.toString().padStart(2, '0');
-        document.getElementById('count-proceso').innerText = data.proceso.toString().padStart(2, '0');
-        document.getElementById('count-despachadas').innerText = data.despachadas.toString().padStart(2, '0');
-    } catch (e) { console.log("Error cargando pildoras"); }
 }
