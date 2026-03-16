@@ -92,4 +92,95 @@
     </div>
 
     <script>
-        
+        // 1. LISTA DE PILOTOS
+const pilotos = { 
+    "101": { n: "Carlos Hernandez", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-834BPT" }, 
+    "102": { n: "Mynor Josue Guzman Rivera", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-826BZQ" } 
+};
+
+// 2. TU URL (Asegúrate que sea la que termina en REx6/exec)
+const URL_SCRIPT = 'https://script.google.com';
+
+// 3. FUNCIÓN PARA ENTRAR (LA QUE HACÍA FALTA)
+function entrar() {
+    const user = document.getElementById('u').value.toLowerCase().trim();
+    const pass = document.getElementById('p').value;
+
+    if(user == "operador 1" && pass == "terpac1") {
+        document.getElementById('login').style.display='none'; 
+        document.getElementById('ui-app').style.display='block';
+    } 
+    else if(user == "supervisor 1" && pass == "terpac2") {
+        document.getElementById('login').style.display='none'; 
+        document.getElementById('ui-supervisor').style.display='block';
+        iniciarReloj();
+        actualizarPildoras();
+    }
+    else { alert("Acceso Incorrecto"); }
+}
+
+// 4. FUNCIÓN PARA MOSTRAR NOMBRE AL ESCRIBIR ID
+function check() {
+    const id = document.getElementById('id-in').value.trim();
+    const box = document.getElementById('piloto-box');
+    if(pilotos[id]) { 
+        box.innerText = "👨‍✈️ Piloto: " + pilotos[id].n; 
+        box.style.display='block'; 
+    } else { 
+        box.style.display='none'; 
+    }
+}
+
+// 5. FUNCIÓN PARA ENVIAR (CON TODOS LOS DATOS)
+function enviar() {
+    const id = document.getElementById('id-in').value.trim();
+    const piloto = pilotos[id];
+
+    if(!piloto) return alert("ID no encontrado");
+
+    const btn = document.getElementById('btn-env');
+    const mov = document.getElementById('mov').value;
+    const prod = document.getElementById('prod').value;
+
+    btn.innerText = "Enviando..."; btn.disabled = true;
+
+    const datosParaEnviar = {
+        id: id, n: piloto.n, t: piloto.t, c: piloto.c, p: piloto.p, m: mov, pr: prod
+    };
+
+    fetch(URL_SCRIPT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datosParaEnviar)
+    })
+    .then(() => {
+        alert("¡Datos enviados!");
+        btn.innerText = "Enviar"; btn.disabled = false;
+        document.getElementById('id-in').value = "";
+        document.getElementById('piloto-box').style.display = 'none';
+    })
+    .catch(err => {
+        alert("Error de red");
+        btn.innerText = "Enviar"; btn.disabled = false;
+    });
+}
+
+// 6. RELOJ Y PÍLDORAS (Para el Supervisor)
+function iniciarReloj() {
+    setInterval(() => {
+        const ahora = new Date();
+        document.getElementById('reloj').innerText = ahora.toLocaleTimeString('es-GT', { hour12: false });
+        document.getElementById('fecha-actual').innerText = ahora.toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }, 1000);
+}
+
+async function actualizarPildoras() {
+    try {
+        const response = await fetch(URL_SCRIPT);
+        const data = await response.json();
+        document.getElementById('count-pendientes').innerText = data.pendientes.toString().padStart(2, '0');
+        document.getElementById('count-proceso').innerText = data.proceso.toString().padStart(2, '0');
+        document.getElementById('count-despachadas').innerText = data.despachadas.toString().padStart(2, '0');
+    } catch (e) { console.log("Error en pildoras (necesitas función doGet en Sheets)"); }
+}
