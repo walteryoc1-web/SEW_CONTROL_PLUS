@@ -139,34 +139,45 @@
             if(pilotos[id]) { box.innerText = "👨‍✈️ Piloto: " + pilotos[id].n; box.style.display='block'; } else { box.style.display='none'; }
         }
 
-        function enviar() {
-            const id = document.getElementById('id-in').value.trim();
-            if(!pilotos[id]) return alert("ID no encontrado");
-            const btn = document.getElementById('btn-env');
-            btn.innerText = "Enviando..."; btn.disabled = true;
+       function enviar() {
+    const id = document.getElementById('id-in').value.trim();
+    const piloto = pilotos[id]; // Busca en tu lista de pilotos
 
-            const mov = document.getElementById('mov').value;
-            const prod = document.getElementById('prod').value;
-            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod}`;
+    if(!piloto) return alert("ID no encontrado");
 
-            fetch(URL_SCRIPT, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: textoFinal
-            }).then(() => {
-                alert("✅ Registro Exitoso");
-                document.getElementById('id-in').value = "";
-                document.getElementById('piloto-box').style.display='none';
-            }).catch(() => {
-                alert("Error de envío");
-            }).finally(() => {
-                btn.innerText = "REGISTRAR DATOS 🚀";
-                btn.disabled = false;
-            });
-        }
-    </script>
-</body>
-</html>
+    const btn = document.getElementById('btn-env');
+    const mov = document.getElementById('mov').value;
+    const prod = document.getElementById('prod').value;
 
+    btn.innerText = "Enviando..."; 
+    btn.disabled = true;
 
+    // Preparamos el paquete con todos los datos por separado
+    const datosParaEnviar = {
+        id: id,
+        n: piloto.n,
+        t: piloto.t,
+        c: piloto.c,
+        p: piloto.p,
+        m: mov,
+        pr: prod
+    };
 
+    fetch('https://script.google.com', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datosParaEnviar)
+    })
+    .then(() => {
+        alert("¡Datos de " + piloto.n + " enviados!");
+        btn.innerText = "Enviar";
+        btn.disabled = false;
+    })
+    .catch(err => {
+        alert("Error en el envío");
+        console.error(err);
+        btn.innerText = "Enviar";
+        btn.disabled = false;
+    });
+}
