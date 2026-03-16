@@ -100,7 +100,7 @@
 
             const mov = document.getElementById('mov').value;
             const prod = document.getElementById('prod').value;
-            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod} | Transp: ${pilotos[id].t} | Cliente: ${pilotos[id].c} | Placa: ${pilotos[id].p}`;
+            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod}`;
 
             fetch(URL_SCRIPT, {
                 method: 'POST',
