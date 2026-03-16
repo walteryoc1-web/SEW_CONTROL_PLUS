@@ -67,9 +67,9 @@
             <option>YC (ARG)</option>
         </select>
 <div style="margin-top: 15px;">
-    <input type="text" id="Ciclo" placeholder="Ciclo Terpac" style="width: 100%; margin-bottom: 10px;">
+    <input type="text" id="CicloTer" placeholder="Ciclo Terpac" style="width: 100%; margin-bottom: 10px;">
     
-    <input type="text" id="Ciclo" placeholder="Ciclo E.P.Q" style="width: 100%;">
+    <input type="text" id="CicloEPQ" placeholder="Ciclo E.P.Q" style="width: 100%;">
 </div>        
         <button id="btn-env" class="btn" onclick="enviar()">REGISTRAR DATOS 🚀</button>
         <button class="btn-salir" onclick="location.reload()">CERRAR SESIÓN</button>
@@ -151,7 +151,9 @@
 
             const mov = document.getElementById('mov').value;
             const prod = document.getElementById('prod').value;
-            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod} | Transp: ${pilotos[id].t} | Cliente: ${pilotos[id].c} | Placa: ${pilotos[id].p}`;
+            const cTer = document.getElementById('CicloTer').value;
+            const cEPQ = document.getElementById('CicloEPQ').value;
+            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod} | Transp: ${pilotos[id].t} | Cliente: ${pilotos[id].c} | Placa: ${pilotos[id].p} | Ciclo Terpac: ${cTer} | Ciclo E.P.Q: ${cEPQ}`;
 
             fetch(URL_SCRIPT, {
                 method: 'POST',
