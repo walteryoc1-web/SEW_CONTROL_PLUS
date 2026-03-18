@@ -127,18 +127,24 @@
             const user = document.getElementById('u').value.toLowerCase().trim();
             const pass = document.getElementById('p').value;
 
-            if(user == "operador 1" && pass == "terpac1") {
-                document.getElementById('login').style.display='none'; 
-                document.getElementById('ui-app').style.display='block';
-            } 
-            else if(user == "supervisor 1" && pass == "terpac2") {
-                document.getElementById('login').style.display='none'; 
-                document.getElementById('ui-supervisor').style.display='block';
-                iniciarReloj();
-                actualizarPildoras();
-            }
-            else { alert("Acceso Incorrecto"); }
+                    if(user == "operador 1" && pass == "terpac1") {
+            window.userIdent = "OPE-1"; // Identificador para el reporte
+            document.getElementById('login').style.display='none'; 
+            document.getElementById('ui-app').style.display='block';
+        } 
+        else if(user == "operador 2" && pass == "terpac3") { // Nueva clave para el segundo
+            window.userIdent = "OPE-2";
+            document.getElementById('login').style.display='none'; 
+            document.getElementById('ui-app').style.display='block';
         }
+        else if(user == "supervisor 1" && pass == "terpac2") {
+            document.getElementById('login').style.display='none'; 
+            document.getElementById('ui-supervisor').style.display='block';
+            iniciarReloj();
+            actualizarPildoras();
+        }
+        else { alert("Acceso Incorrecto"); }
+
 
         async function actualizarPildoras() {
             try {
@@ -166,17 +172,20 @@
         }
 
         function enviar() {
-            const id = document.getElementById('id-in').value.trim();
-            if(!pilotos[id]) return alert("ID no encontrado");
-            const btn = document.getElementById('btn-env');
-            btn.innerText = "Enviando..."; btn.disabled = true;
+    const id = document.getElementById('id-in').value.trim();
+    if(!pilotos[id]) return alert("ID no encontrado");
+    const btn = document.getElementById('btn-env');
+    btn.innerText = "Enviando..."; btn.disabled = true;
 
-            const mov = document.getElementById('mov').value;
-            const prod = document.getElementById('prod').value;
-            const cTer = document.getElementById('CicloTer').value;
-            const cEPQ = document.getElementById('CicloEPQ').value;
-            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod} | Transp: ${pilotos[id].t} | Cliente: ${pilotos[id].c} | Placa: ${pilotos[id].p} | Ciclo Terpac: ${cTer} | Ciclo E.P.Q: ${cEPQ}`;
+    const mov = document.getElementById('mov').value;
+    const prod = document.getElementById('prod').value;
+    const cTer = document.getElementById('CicloTer').value;
+    const cEPQ = document.getElementById('CicloEPQ').value;
 
+    // Aquí agregamos el identificador del usuario al inicio del paquete de datos
+    const textoFinal = `User: ${window.userIdent} | ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod} | Transp: ${pilotos[id].t} | Cliente: ${pilotos[id].c} | Placa: ${pilotos[id].p} | Ciclo Terpac: ${cTer} | Ciclo E.P.Q: ${cEPQ}`;
+
+ }
             fetch(URL_SCRIPT, {
                 method: 'POST',
                 mode: 'no-cors',
