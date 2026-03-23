@@ -83,23 +83,16 @@
         
         <div class="pildoras-horizontal">
             <div class="pildora" style="border-bottom-color: #f1c40f;"><h3>Pendiente Ingreso</h3><p id="count-pendientes">00</p></div>
-            <button style="width:90%; margin-top:8px; background:var(--amarillo); border:none; border-radius:5px; font-weight:bold; font-size:10px; padding:4px; cursor:pointer;">DETALLE [M1]</button>
-    </div>
             <div class="pildora" style="border-bottom-color: #3498db;"><h3>En Proceso Carga</h3><p id="count-proceso">00</p></div>
             <div class="pildora" style="border-bottom-color: #2ecc71;"><h3>Total Despachadas</h3><p id="count-despachadas">00</p></div>
         </div>
 
-        
+        <div class="reloj-container">
+            <div id="fecha-actual">Cargando...</div>
+            <div id="reloj">00:00:00</div>
+        </div>
 
-<div class="reloj-container">
-    <div id="fecha-actual">Cargando...</div>
-    <div id="reloj">00:00:00</div>
-</div>
-
-<!-- AQUÍ ES DONDE APARECERÁ TODO -->
-<div id="contenedor-grafica" style="width: 100%; min-height: 350px; background: white; border: 2px solid #eee; border-radius: 15px; overflow-y: auto; text-align: left; padding: 15px; box-sizing: border-box;">
-    <p style="text-align:center; margin-top:140px; color:#bbb; font-weight:bold;">TOQUE UNA PÍLDORA ARRIBA PARA VER DETALLES</p>
-</div>
+        <div id="contenedor-grafica">Área para Gráfica de Rendimiento Logístico</div>
 
         <button class="btn-salir" onclick="location.reload()">SALIR AL PANEL</button>
     </div>
@@ -183,7 +176,7 @@
             const prod = document.getElementById('prod').value;
             const cTer = document.getElementById('CicloTer').value;
             const cEPQ = document.getElementById('CicloEPQ').value;
-            const textoFinal = `${id};${pilotos[id].n};${mov};${prod};${pilotos[id].t};${pilotos[id].c};${pilotos[id].p};${cTer};${cEPQ}`;
+            const textoFinal = `${id};${pilotos[id].n};${mov};${prod};${pilotos[id].t};${pilotos[id].c};${pilotos[id].p};${cTer}|${cEPQ}`;
 
             fetch(URL_SCRIPT, {
                 method: 'POST',
