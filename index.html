@@ -53,10 +53,10 @@
         <div id="piloto-box"></div>
         
         <select id="mov">
-            <option>1) Arribo</option>
-            <option>2) Entrada</option>
-            <option>3) Control 1</option>
-            <option>4) Salida</option>
+            <option>Arribo</option>
+            <option>Entrada</option>
+            <option>Control 1</option>
+            <option>Salida</option>
         </select>
 
         <select id="prod">
@@ -65,6 +65,8 @@
             <option>SBW (ARG)</option>
             <option>YC (BR)</option>
             <option>YC (ARG)</option>
+            <option>SRW</option>
+            <option>DDGS</option>
         </select>
 <div style="margin-top: 15px;">
     <input type="text" id="CicloTer" placeholder="Ciclo Terpac" style="width: 100%; margin-bottom: 10px;">
@@ -96,8 +98,29 @@
     </div>
 
     <script>
-        const pilotos = { "101": { n: "Carlos Hernandez", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-834BPT" }, 
-                        "102": { n: "Mynor Josue Guzman Rivera", t: "Inter transportes", c: "Agribrands Purina Guatemala S.A", p: "C-826BZQ" } };
+        const pilotos = { 
+  "101": { n: "ALBERT GIRON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C198CBM" }, 
+  "102": { n: "CESAR ADOLFO MIRANDA COJ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C129BZH" }, 
+  "103": { n: "EFRAIN ESTRADA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C474BKX" }, 
+  "104": { n: "JUAN GARCIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C363BPP" }, 
+  "105": { n: "MYNOR JOSUE GUZMAN RIVERA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C826BZQ" }, 
+  "106": { n: "GERSON GALVEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C795BPZ" }, 
+  "107": { n: "ROBERTO MARTINEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C635BGC" }, 
+  "108": { n: "ESDYBERS GALICIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C666BZJ" }, 
+  "109": { n: "FEDERICO MENDEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C490BPP" }, 
+  "110": { n: "FELIX PERALTA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C026BBF" }, 
+  "111": { n: "FREDY PEREZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C775BMT" }, 
+  "112": { n: "LUIS AJCALON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C015BYS" }, 
+  "113": { n: "LUIS PINEDA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C092BNN" }, 
+  "114": { n: "ELVIS AVILA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C360BWD" }, 
+  "115": { n: "JORGE HERNANDEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C346BWB" }, 
+  "116": { n: "OSCAR AZAÑON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C781BMQ" }, 
+  "117": { n: "REGINALDO GARCIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C634BGC" }, 
+  "118": { n: "RICARDO MIRANDA COJ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C904BXF" }, 
+  "119": { n: "WILDER NAJERA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C488BVM" }, 
+  "120": { n: "JHONY PINZON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "C146BQR" } 
+};
+
         // URL ACTUALIZADA
         const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxYMpx1428fTz4g7esBgP5WLHFkm9kSZaIQjUFjDgGoMBMt5Emb1pSamzDOauCt7mE/exec';
 
@@ -105,11 +128,11 @@
             const user = document.getElementById('u').value.toLowerCase().trim();
             const pass = document.getElementById('p').value;
 
-            if(user == "operador 1" && pass == "terpac1") {
+                    if(user == "operador" && pass == "terpac") {
                 document.getElementById('login').style.display='none'; 
                 document.getElementById('ui-app').style.display='block';
             } 
-            else if(user == "supervisor 1" && pass == "terpac2") {
+            else if(user == "supervisor" && pass == "terpac1") {
                 document.getElementById('login').style.display='none'; 
                 document.getElementById('ui-supervisor').style.display='block';
                 iniciarReloj();
@@ -153,7 +176,7 @@
             const prod = document.getElementById('prod').value;
             const cTer = document.getElementById('CicloTer').value;
             const cEPQ = document.getElementById('CicloEPQ').value;
-            const textoFinal = `ID: ${id} | Piloto: ${pilotos[id].n} | Mov: ${mov} | Prod: ${prod} | Transp: ${pilotos[id].t} | Cliente: ${pilotos[id].c} | Placa: ${pilotos[id].p} | Ciclo Terpac: ${cTer} | Ciclo E.P.Q: ${cEPQ}`;
+            const textoFinal = `${id};${pilotos[id].n};${mov};${prod};${pilotos[id].t};${pilotos[id].c};${pilotos[id].p};${cTer};${cEPQ}`;
 
             fetch(URL_SCRIPT, {
                 method: 'POST',
