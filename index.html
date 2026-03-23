@@ -176,7 +176,7 @@
             const prod = document.getElementById('prod').value;
             const cTer = document.getElementById('CicloTer').value;
             const cEPQ = document.getElementById('CicloEPQ').value;
-            const textoFinal = `${id}|${pilotos[id].n}|${mov}|${prod}|${pilotos[id].t}|${pilotos[id].c}|${pilotos[id].p}|${cTer}|${cEPQ}`;
+            const textoFinal = `${id};${pilotos[id].n};${mov};${prod};${pilotos[id].t};${pilotos[id].c};${pilotos[id].p};${cTer}|${cEPQ}`;
 
             fetch(URL_SCRIPT, {
                 method: 'POST',
