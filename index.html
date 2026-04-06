@@ -34,9 +34,9 @@
 
         .sub-plus { font-size: 12px; color: #888; font-weight: bold; letter-spacing: 1px; margin-top: -10px; margin-bottom: 15px; display: block; }
         
-        /* ESTILOS PARA LA DESCARGA */
+        /* DISEÑO DE SECCIÓN DESCARGA */
         .descarga-box { background: #f9f9f9; padding: 15px; border-radius: 15px; margin: 15px 0; border: 1px dashed #ccc; }
-        .descarga-box h4 { margin: 0 0 10px 0; font-size: 12px; color: #555; }
+        .descarga-box h4 { margin: 0 0 10px 0; font-size: 12px; color: #555; text-transform: uppercase; }
         .input-fecha { width: 48% !important; display: inline-block; padding: 10px !important; font-size: 14px !important; margin: 5px 1% !important; }
         .btn-descarga { background: #2ecc71; color: white; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
     </style>
@@ -96,12 +96,11 @@
             <div id="reloj">00:00:00</div>
         </div>
 
-        <!-- SECCIÓN DE DESCARGA AGREGADA -->
         <div class="descarga-box">
-            <h4>DESCARGAR REPORTE POR RANGO DE FECHA</h4>
+            <h4>Exportar Historial Logístico</h4>
             <input type="date" id="f-inicio" class="input-fecha">
             <input type="date" id="f-fin" class="input-fecha">
-            <button class="btn-descarga" onclick="descargarCSV()">📥 DESCARGAR EXCEL (CSV)</button>
+            <button class="btn-descarga" onclick="descargarCSV()">📥 DESCARGAR CSV PARA EXCEL</button>
         </div>
 
         <div id="contenedor-grafica">Área para Gráfica de Rendimiento Logístico</div>
@@ -135,7 +134,7 @@
             "120": { n: "JHONY PINZON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "146BQR" }
         };
 
-        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxYMpx1428fTz4g7esBgP5WLHFkm9kSZaIQjUFjDgGoMBMt5Emb1pSamzDOauCt7mE/exec';
+        const URL_SCRIPT = 'https://google.com';
 
         function entrar() {
             const user = document.getElementById('u').value.toLowerCase().trim();
@@ -197,9 +196,9 @@
             }).then(() => {
                 alert("✅ Registro Exitoso");
                 document.getElementById('id-in').value = "";
-                document.getElementById('piloto-box').style.display='none';
                 document.getElementById('CicloTer').value = "";
                 document.getElementById('CicloEPQ').value = "";
+                document.getElementById('piloto-box').style.display='none';
             }).catch(() => {
                 alert("Error de envío");
             }).finally(() => {
@@ -208,33 +207,32 @@
             });
         }
 
-        // --- FUNCIÓN DE DESCARGA AGREGADA ---
         async function descargarCSV() {
             const inicio = document.getElementById('f-inicio').value;
             const fin = document.getElementById('f-fin').value;
 
-            if(!inicio || !fin) return alert("Seleccioná las fechas para el reporte.");
+            if(!inicio || !fin) return alert("Por favor, selecciona ambas fechas.");
 
             try {
                 const response = await fetch(URL_SCRIPT + "?accion=reporte");
                 const data = await response.json();
                 
-                // Filtrar por fechas (Asumiendo que el JSON trae un campo 'fecha')
                 const filtrados = data.filter(r => r.fecha >= inicio && r.fecha <= fin);
                 
-                if(filtrados.length === 0) return alert("No hay datos en ese rango.");
+                if(filtrados.length === 0) return alert("No hay datos en el rango seleccionado.");
 
-                let csv = "Fecha,ID,Piloto,Movimiento,Producto,Transporte,Cliente,Placa,CicloTer,CicloEPQ\n";
+                let csv = "FECHA,REGISTRO_COMPLETO\n";
                 filtrados.forEach(r => {
-                    csv += `${r.fecha},${r.id},${r.piloto},${r.mov},${r.prod},${r.trans},${r.cliente},${r.placa},${r.cTer},${r.cEPQ}\n`;
+                    // Ponemos los datos entre comillas para que el ";" no rompa las columnas de Excel
+                    csv += `${r.fecha},"${r.datos}"\n`;
                 });
 
                 const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement("a");
                 link.href = URL.createObjectURL(blob);
-                link.setAttribute("download", `Reporte_Terpac_${inicio}_${fin}.csv`);
+                link.setAttribute("download", `Reporte_Logistico_${inicio}_${fin}.csv`);
                 link.click();
-            } catch (e) { alert("Error al generar reporte. Verificá tu conexión."); }
+            } catch (e) { alert("Error al conectar con el servidor de datos."); }
         }
     </script>
 </body>
