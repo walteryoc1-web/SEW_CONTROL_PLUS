@@ -32,8 +32,13 @@
         .dot { width: 10px; height: 10px; background: #2ecc71; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* Estilo para los nuevos subtitulos */
         .sub-plus { font-size: 12px; color: #888; font-weight: bold; letter-spacing: 1px; margin-top: -10px; margin-bottom: 15px; display: block; }
+        
+        /* ESTILOS PARA LA DESCARGA */
+        .descarga-box { background: #f9f9f9; padding: 15px; border-radius: 15px; margin: 15px 0; border: 1px dashed #ccc; }
+        .descarga-box h4 { margin: 0 0 10px 0; font-size: 12px; color: #555; }
+        .input-fecha { width: 48% !important; display: inline-block; padding: 10px !important; font-size: 14px !important; margin: 5px 1% !important; }
+        .btn-descarga { background: #2ecc71; color: white; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -68,11 +73,10 @@
             <option>SRW</option>
             <option>DDGS</option>
         </select>
-<div style="margin-top: 15px;">
-    <input type="text" id="CicloTer" placeholder="Ciclo Terpac" style="width: 100%; margin-bottom: 10px;">
-    
-    <input type="text" id="CicloEPQ" placeholder="Ciclo E.P.Q" style="width: 100%;">
-</div>        
+        <div style="margin-top: 15px;">
+            <input type="text" id="CicloTer" placeholder="Ciclo Terpac" style="width: 100%; margin-bottom: 10px;">
+            <input type="text" id="CicloEPQ" placeholder="Ciclo E.P.Q" style="width: 100%;">
+        </div>        
         <button id="btn-env" class="btn" onclick="enviar()">REGISTRAR DATOS 🚀</button>
         <button class="btn-salir" onclick="location.reload()">CERRAR SESIÓN</button>
     </div>
@@ -92,6 +96,14 @@
             <div id="reloj">00:00:00</div>
         </div>
 
+        <!-- SECCIÓN DE DESCARGA AGREGADA -->
+        <div class="descarga-box">
+            <h4>DESCARGAR REPORTE POR RANGO DE FECHA</h4>
+            <input type="date" id="f-inicio" class="input-fecha">
+            <input type="date" id="f-fin" class="input-fecha">
+            <button class="btn-descarga" onclick="descargarCSV()">📥 DESCARGAR EXCEL (CSV)</button>
+        </div>
+
         <div id="contenedor-grafica">Área para Gráfica de Rendimiento Logístico</div>
 
         <button class="btn-salir" onclick="location.reload()">SALIR AL PANEL</button>
@@ -99,38 +111,37 @@
 
     <script>
         const pilotos = { 
-  "101": { n: "ALBERT GIRON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "198CBM" }, 
-  "102": { n: "CESAR ADOLFO MIRANDA COJ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "129BZH" }, 
-  "121": { n: "OSVALDO OBREGON ARRIOLA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "265BQM" }, 
-  "122": { n: "REYNABEL PAYES", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "603BJC" },          
-  "103": { n: "EFRAIN ESTRADA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "474BKX" }, 
-  "104": { n: "JUAN GARCIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "363BPP" }, 
-  "105": { n: "MYNOR JOSUE GUZMAN RIVERA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "826BZQ" }, 
-  "106": { n: "GERSON GALVEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "795BPZ" }, 
-  "107": { n: "ROBERTO MARTINEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "635BGC" }, 
-  "108": { n: "ESDYBERS GALICIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "666BZJ" }, 
-  "109": { n: "FEDERICO MENDEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "490BPP" }, 
-  "110": { n: "FELIX PERALTA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "026BBF" }, 
-  "111": { n: "FREDY PEREZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "775BMT" }, 
-  "112": { n: "LUIS AJCALON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "015BYS" }, 
-  "113": { n: "LUIS PINEDA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "092BNN" }, 
-  "114": { n: "ELVIS AVILA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "360BWD" }, 
-  "115": { n: "JORGE HERNANDEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "346BWB" }, 
-  "116": { n: "OSCAR AZAÑON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "781BMQ" }, 
-  "117": { n: "REGINALDO GARCIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "634BGC" }, 
-  "118": { n: "RICARDO MIRANDA COJ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "904BXF" }, 
-  "119": { n: "WILDER NAJERA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "488BVM" }, 
-  "120": { n: "JHONY PINZON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "146BQR" }
-  };
+            "101": { n: "ALBERT GIRON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "198CBM" }, 
+            "102": { n: "CESAR ADOLFO MIRANDA COJ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "129BZH" }, 
+            "121": { n: "OSVALDO OBREGON ARRIOLA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "265BQM" }, 
+            "122": { n: "REYNABEL PAYES", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "603BJC" },          
+            "103": { n: "EFRAIN ESTRADA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "474BKX" }, 
+            "104": { n: "JUAN GARCIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "363BPP" }, 
+            "105": { n: "MYNOR JOSUE GUZMAN RIVERA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "826BZQ" }, 
+            "106": { n: "GERSON GALVEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "795BPZ" }, 
+            "107": { n: "ROBERTO MARTINEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "635BGC" }, 
+            "108": { n: "ESDYBERS GALICIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "666BZJ" }, 
+            "109": { n: "FEDERICO MENDEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "490BPP" }, 
+            "110": { n: "FELIX PERALTA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "026BBF" }, 
+            "111": { n: "FREDY PEREZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "775BMT" }, 
+            "112": { n: "LUIS AJCALON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "015BYS" }, 
+            "113": { n: "LUIS PINEDA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "092BNN" }, 
+            "114": { n: "ELVIS AVILA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "360BWD" }, 
+            "115": { n: "JORGE HERNANDEZ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "346BWB" }, 
+            "116": { n: "OSCAR AZAÑON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "781BMQ" }, 
+            "117": { n: "REGINALDO GARCIA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "634BGC" }, 
+            "118": { n: "RICARDO MIRANDA COJ", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "904BXF" }, 
+            "119": { n: "WILDER NAJERA", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "488BVM" }, 
+            "120": { n: "JHONY PINZON", t: "SANTA MONICA", c: "AGRIBRANDS PURINA DE GUATEMALA, S.A.", p: "146BQR" }
+        };
 
-        // URL ACTUALIZADA
         const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxYMpx1428fTz4g7esBgP5WLHFkm9kSZaIQjUFjDgGoMBMt5Emb1pSamzDOauCt7mE/exec';
 
         function entrar() {
             const user = document.getElementById('u').value.toLowerCase().trim();
             const pass = document.getElementById('p').value;
 
-                    if(user == "operador" && pass == "terpac") {
+            if(user == "operador" && pass == "terpac") {
                 document.getElementById('login').style.display='none'; 
                 document.getElementById('ui-app').style.display='block';
             } 
@@ -145,7 +156,6 @@
 
         async function actualizarPildoras() {
             try {
-                // Hacemos una petición GET al script para obtener los conteos
                 const response = await fetch(URL_SCRIPT);
                 const data = await response.json();
                 document.getElementById('count-pendientes').innerText = data.pendientes.toString().padStart(2, '0');
@@ -188,12 +198,43 @@
                 alert("✅ Registro Exitoso");
                 document.getElementById('id-in').value = "";
                 document.getElementById('piloto-box').style.display='none';
+                document.getElementById('CicloTer').value = "";
+                document.getElementById('CicloEPQ').value = "";
             }).catch(() => {
                 alert("Error de envío");
             }).finally(() => {
                 btn.innerText = "REGISTRAR DATOS 🚀";
                 btn.disabled = false;
             });
+        }
+
+        // --- FUNCIÓN DE DESCARGA AGREGADA ---
+        async function descargarCSV() {
+            const inicio = document.getElementById('f-inicio').value;
+            const fin = document.getElementById('f-fin').value;
+
+            if(!inicio || !fin) return alert("Seleccioná las fechas para el reporte.");
+
+            try {
+                const response = await fetch(URL_SCRIPT + "?accion=reporte");
+                const data = await response.json();
+                
+                // Filtrar por fechas (Asumiendo que el JSON trae un campo 'fecha')
+                const filtrados = data.filter(r => r.fecha >= inicio && r.fecha <= fin);
+                
+                if(filtrados.length === 0) return alert("No hay datos en ese rango.");
+
+                let csv = "Fecha,ID,Piloto,Movimiento,Producto,Transporte,Cliente,Placa,CicloTer,CicloEPQ\n";
+                filtrados.forEach(r => {
+                    csv += `${r.fecha},${r.id},${r.piloto},${r.mov},${r.prod},${r.trans},${r.cliente},${r.placa},${r.cTer},${r.cEPQ}\n`;
+                });
+
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.setAttribute("download", `Reporte_Terpac_${inicio}_${fin}.csv`);
+                link.click();
+            } catch (e) { alert("Error al generar reporte. Verificá tu conexión."); }
         }
     </script>
 </body>
