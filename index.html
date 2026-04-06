@@ -60,10 +60,40 @@
     background: #eee; 
     padding: 15px; 
     border-radius: 15px; 
-    margin: 15px 20px 15px auto; /* El 'auto' a la izquierda la empuja al extremo derecho */
-    max-width: 300px; /* Evita que crezca demasiado */
+    margin: 15px 25px 15px auto; /* La empuja a la derecha */
+    max-width: 500px; /* Aumentamos un poco para que quepa la fila */
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* CONTENEDOR PARA ALINEAR EN FILA */
+.fila-descarga {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espacio entre calendarios y botón */
+    margin-top: 10px;
+}
+
+.input-fecha { 
+    width: 130px !important; 
+    padding: 8px !important; 
+    margin: 0 !important; 
+    font-size: 12px !important;
+}
+
+.btn-csv { 
+    background: #27ae60; 
+    color: white; 
+    border: none; 
+    padding: 10px 15px; 
+    border-radius: 10px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    width: auto; 
+    margin: 0 !important; /* Quitamos márgenes para que no salte de línea */
+    font-size: 12px;
+    white-space: nowrap; /* Evita que el texto del botón se parta */
 }
 
 .input-fecha { 
