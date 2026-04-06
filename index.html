@@ -208,26 +208,40 @@
         }
 
         async function descargarCSV() {
-            const inicio = document.getElementById('f-inicio').value;
-            const fin = document.getElementById('f-fin').value;
-            if(!inicio || !fin) return alert("Seleccioná las fechas.");
+    const inicio = document.getElementById('f-inicio').value;
+    const fin = document.getElementById('f-fin').value;
+    if(!inicio || !fin) return alert("Seleccioná las fechas.");
 
-            try {
-                const response = await fetch(URL_SCRIPT + "?accion=reporte");
-                const data = await response.json();
-                const filtrados = data.filter(r => r.fecha >= inicio && r.fecha <= fin);
-                if(filtrados.length === 0) return alert("No hay datos en esas fechas.");
+    try {
+        const response = await fetch(URL_SCRIPT + "?accion=reporte");
+        const data = await response.json();
+        const filtrados = data.filter(r => r.fecha >= inicio && r.fecha <= fin);
+        if(filtrados.length === 0) return alert("No hay datos en esas fechas.");
 
-                let csv = "FECHA,REGISTRO_COMPLETO\n";
-                filtrados.forEach(r => { csv += `${r.fecha},"${r.datos}"\n`; });
+        // Encabezados claros para Excel
+        let csv = "FECHA,HORA,ID,PILOTO,MOVIMIENTO,PRODUCTO,TRANSPORTE,CLIENTE,PLACA,CICLO_TERPAC,CICLO_EPQ\n";
+        
+        filtrados.forEach(r => {
+            // Separamos la fecha de la hora (vienen en r.datos[0])
+            const fechaFull = new Date(r.datos[0]);
+            const soloFecha = fechaFull.toLocaleDateString();
+            const soloHora = fechaFull.toLocaleTimeString();
 
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.setAttribute("download", `Reporte_Terpac_${inicio}_${fin}.csv`);
-                link.click();
-            } catch (e) { alert("Error al conectar con los datos."); }
-        }
+            // Los datos del piloto están en r.datos[1] (ID;Nombre;Mov...)
+            // Los separamos por el punto y coma ";"
+            const detalle = r.datos[1].split(';');
+            
+            // Unimos todo en una línea de CSV
+            csv += `${soloFecha},${soloHora},${detalle.join(',')}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", `Reporte_Logistico_Terpac_${inicio}_${fin}.csv`);
+        link.click();
+    } catch (e) { alert("Error al procesar el reporte."); }
+}
     </script>
 </body>
 </html>
